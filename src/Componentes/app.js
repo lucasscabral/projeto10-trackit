@@ -2,9 +2,9 @@ import "../Estilos/reset.css"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TelaLogin from "./TelaLogin";
 import TelaCadastro from "./TelaCadastro";
-import TelaHoje from "./TelaHoje";
-import TelaHabitos from "./TelaHabitos";
-import TelaHistorico from "./TelaHistorico";
+import TelaHoje from "./Conteudos/TelaHoje";
+import TelaHabitos from "./Conteudos/TelaHabitos";
+import TelaHistorico from "./Conteudos/TelaHistorico";
 import { useState,createContext } from "react";
 import UserContext from "./UseContext";
 //import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -12,13 +12,10 @@ import UserContext from "./UseContext";
 
 
 export default function App(){
-    const[salvar,setSalvar] = useState({nome:"lucas",sobreNome:"cabral"});
     const[dadosUsuario,setDadosUsuario] = useState({});
-
-    //let obj = {salvar,setSalvar,dadosUsuario,setDadosUsuario} 
     
     return(
-        <UserContext.Provider value={{salvar,setSalvar,dadosUsuario}}>
+        <UserContext.Provider value={{dadosUsuario}}>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<TelaLogin setDadosUsuario={setDadosUsuario}/>}/>

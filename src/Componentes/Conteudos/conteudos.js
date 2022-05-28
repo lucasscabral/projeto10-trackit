@@ -1,16 +1,18 @@
 import styled from "styled-components"
-import NomeApp from "../image/TrackIt.png"
+import NomeApp from "../../image/TrackIt.png"
 import { Link } from "react-router-dom";
-import "../Estilos/fontes.css"
+import "../../Estilos/fontes.css"
 
 export default function Conteudos(props){
+    console.log(props)
+
     return(
             <TodosConteudos>
                 <Topo>
                     <img src={NomeApp} alt="Nome-App"/>
                     <img src={NomeApp} alt="foto-usuario"/>
                 </Topo>
-                    {props.children}
+                {props.children}
                 <RodaPe>
                     <Link to="/habitos" style={{ textDecoration: "none"}}>
                         <h1>Hábitos</h1>
@@ -28,6 +30,7 @@ export default function Conteudos(props){
 
 const TodosConteudos = styled.div`
     width: 100%;
+    height: 100vh;
     background-color: #E5E5E5;
     font-family: 'Lexend Deca', sans-serif;
 `;
