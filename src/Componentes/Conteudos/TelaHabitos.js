@@ -42,7 +42,17 @@ export default function TelaHoje(){
     const[loadingSalvar,setLoadingSalvar] = useState(false);
     const[diasSelec,setDiasSelec] = useState([]);
     const dias = ["D","S","T","Q","Q","S","S"];
-    const{dadosUsuario,taskSalva,setTaskSalva} = useContext(UserContext);
+    const{dadosUsuario,
+        taskSalva,
+        setTaskSalva,
+        checkhabitos,
+        setCheckhabitos,
+        habitosHoje,
+        setHabitosHoje,
+        habitosCheck,
+        setHabitosCheck,
+        porcentagem,
+        setPorcentagem} = useContext(UserContext);
     const[atualizar,setAtualizar] = useState(0);
       
        useEffect(() => { 
@@ -63,7 +73,7 @@ export default function TelaHoje(){
 
     function validaTarefa(event){
         event.preventDefault();
-        setLoadingSalvar(!loadingSalvar)
+        setLoadingSalvar(true)
         if(diasSelec.length !== 0){
             if(nomeHabito !== null){
                     const config ={
@@ -80,7 +90,7 @@ export default function TelaHoje(){
                     promise.then(response => {
                         setAtualizar(atualizar + 1)
                         setNomeHabito("");
-                        setLoadingSalvar(!loadingSalvar);
+                        setLoadingSalvar(false);
                         setApareceForm(!apareceForm);
                     })
                 
@@ -106,7 +116,7 @@ export default function TelaHoje(){
    
 
     return(
-        <Conteudos dadosUsuario={dadosUsuario}>
+        <Conteudos dadosUsuario={dadosUsuario} checkhabitos={checkhabitos} habitosHoje={habitosHoje} habitosCheck={habitosCheck} porcentagem={porcentagem} >
             <ConteudosPrincipais>
                 <TopoAdd>
                     <h1>Meus hábitos</h1>
@@ -168,6 +178,9 @@ const TopoAdd = styled.div`
         font-size: 22.976px;
     }
     button{
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 40px;
         height: 35px;
         background: #52B6FF;

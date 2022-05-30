@@ -8,16 +8,21 @@ import dayjs from "dayjs";
 
 
 export default function TelaHoje(){
-    const{dadosUsuario,taskSalva} = useContext(UserContext);
-    const[habitosHoje,setHabitosHoje] = useState([]);
-    const[habitosCheck,setHabitosCheck] = useState([]);
-    const[atualizar,setAtualizar] = useState(0);
-    const[manterAtualizado,setManterAtualizado] = useState();
+    const{dadosUsuario,
+        taskSalva,
+        checkhabitos,
+        setCheckhabitos,
+        habitosHoje,
+        setHabitosHoje,
+        habitosCheck,
+        setHabitosCheck,
+        porcentagem,
+        setPorcentagem} = useContext(UserContext);
 
+    const[atualizar,setAtualizar] = useState(0);
     const dayjs = require('dayjs')
-  
+
     useEffect(() =>{
-        if(habitosHoje.length !== 0){
             const config ={
                 headers: {
                     "Authorization": `Bearer ${dadosUsuario.token}`
@@ -25,55 +30,64 @@ export default function TelaHoje(){
             }
             const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",config);
             promise.then(response =>{
-                setHabitosHoje([...response.data]);
-                setHabitosCheck(...habitosCheck,response.data); 
+                let aux = 0;
+                setCheckhabitos(response.data)
+                setHabitosHoje(response.data.length);
+                response.data.forEach(habito => {if(habito.done === true){
+                    aux++;
+                }})
+                setHabitosCheck(aux);
+
+                if(response.data.length !== 0){
+                    let total = (aux * 100) / response.data.length;
+                    setPorcentagem(total)
+                }    
             }).catch(err =>{
+                
             })
-        }
     },[atualizar,taskSalva])
 
-    function checkHabito(idCheck,habitosDone){
+    function checkHabito(idCheck,habitosDone,sequenciaHabito,maiorSequencia){
+      
         const config ={
             headers: {
                 "Authorization": `Bearer ${dadosUsuario.token}`
             }
         }  
         if(habitosDone){   
-            const unCheck = {
-                done : !habitosDone
-            }
-
-            const promiseUnCheck = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idCheck}/uncheck`,unCheck,config);
-            promiseUnCheck.then(response =>{  
+            
+            const promiseUnCheck = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idCheck}/uncheck`,null,config);
+            promiseUnCheck.then(response =>{
+                setHabitosCheck(habitosCheck - 1);  
                 setAtualizar(atualizar + 1);
-               
             })
-        }else{  
-            const check = {
-                done : !habitosDone
-            }
-            const promisecheck = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idCheck}/check`,check,config);
-            promisecheck.then( response =>{
+        }else{ 
+
+            const promisecheck = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idCheck}/check`,null,config);
+            promisecheck.then( response =>{ 
+                setHabitosCheck(habitosCheck + 1);
                 setAtualizar(atualizar + 1);
             })
            
         } 
     }
+  
+    
 
     return(
-        <Conteudos dadosUsuario={dadosUsuario}>
+       checkHabito.length === 0? "" : <Conteudos dadosUsuario={dadosUsuario} checkhabitos={checkhabitos}  habitosHoje={habitosHoje} habitosCheck={habitosCheck} porcentagem={porcentagem}>
             <ConteudosPrincipais>
                 <Topo>
                     <h1>{dayjs().format('DD/MM')}</h1>
-                    <span>Nenhum hábito concluído ainda</span>
+                    {checkhabitos.length === 0? <span>Nenhum hábito concluído ainda</span>: <Porcentagem>{Math.round(porcentagem)}% dos hábitos concluídos</Porcentagem>}
                 </Topo>
-               {habitosHoje?.map(habitos => <ListaTarefa>
+               {checkhabitos?.map(habitos => <ListaTarefa>
                                                 <div>
                                                         <h2>{habitos.name}</h2>
                                                         <h3>Sequência atual: {habitos.currentSequence} dias</h3>
                                                         <h3>Seu recorde: {habitos.highestSequence} dias</h3>
                                                 </div>
-                                                <ImageCheck colorCheck={!habitos.done?"#EBEBEB":"#8FC549"} src={Check} alt="Check" onClick={() => checkHabito(habitos.id,habitos.done)}/>
+                                                <ImageCheck colorCheck={!habitos.done?"#EBEBEB":"#8FC549"} src={Check} alt="Check" onClick={() => checkHabito(habitos.id,habitos.done,habitos.currentSequence,habitos.highestSequence)}/>
                                             </ListaTarefa>)}
             </ConteudosPrincipais>
         </Conteudos>  
@@ -108,6 +122,12 @@ const Topo = styled.div`
         color: #BABABA;
     }
 `;
+const Porcentagem = styled.h2`
+    font-weight: 400;
+    font-size: 17.976px;
+    color: #8FC549;
+`;
+
 const ListaTarefa = styled.div`
     display: flex;
     justify-content: space-between;

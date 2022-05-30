@@ -4,10 +4,10 @@ import UserContext from "../UseContext"
 import React, { useState,useContext, useEffect } from "react"
 
 export default function TelaHistorico(){
-    const{dadosUsuario} = useContext(UserContext);
+    const{dadosUsuario,checkhabitos} = useContext(UserContext);
 
     return(
-        <Conteudos dadosUsuario={dadosUsuario}>
+        <Conteudos dadosUsuario={dadosUsuario} checkhabitos={checkhabitos}>
         <ConteudosPrincipais>
             <Topo>
                 <h1>Histórico</h1>

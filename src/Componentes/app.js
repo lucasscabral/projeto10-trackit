@@ -13,9 +13,23 @@ import "react-loader-spinner";
 export default function App(){
     const[dadosUsuario,setDadosUsuario] = useState({});
     const[taskSalva,setTaskSalva] = useState([]);  
+    const[checkhabitos,setCheckhabitos] = useState([]);
+    const[habitosHoje,setHabitosHoje] = useState();
+    const[habitosCheck,setHabitosCheck] = useState();
+    const[porcentagem,setPorcentagem] = useState();
 
     return(
-        <UserContext.Provider value={{dadosUsuario,taskSalva,setTaskSalva}}>
+        <UserContext.Provider value={{dadosUsuario,
+                                    taskSalva,
+                                    setTaskSalva,
+                                    checkhabitos,
+                                    setCheckhabitos,
+                                    habitosHoje,
+                                    setHabitosHoje,
+                                    habitosCheck,
+                                    setHabitosCheck,
+                                    porcentagem,
+                                    setPorcentagem}}>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<TelaLogin setDadosUsuario={setDadosUsuario}/>}/>

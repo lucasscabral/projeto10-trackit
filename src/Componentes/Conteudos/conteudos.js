@@ -23,7 +23,7 @@ export default function Conteudos(props){
                         <div>
                             <h2>Hoje</h2>
                             <CircularProgressbar
-                                
+                                value={props.porcentagem}
                                 background
                                 backgroundPadding={6}
                                 styles={buildStyles({
