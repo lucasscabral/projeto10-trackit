@@ -5,18 +5,21 @@ import { Link } from "react-router-dom";
 import "../../Estilos/fontes.css"
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { BallTriangle } from "react-loader-spinner";
 
 export default function Conteudos(props){
-
+    const {reloadEntreTela,setReloadEntreTela } = props;
+    
     return(
             <TodosConteudos>
+                
                 <Topo>
                     <img src={NomeApp} alt="Nome-App"/>
                     <img src={props.dadosUsuario.image} alt="foto-usuario"/>
                 </Topo>
-                {props.children}
+                {!reloadEntreTela ? props.children : <Loading><BallTriangle color="#52B6FF"/> </Loading> }
                 <RodaPe>
-                    <Link to="/habitos" style={{ textDecoration: "none"}}>
+                    <Link to="/habitos" style={{ textDecoration: "none"}} >
                         <h1>Hábitos</h1>
                     </Link>
                     <Link to="/hoje" style={{ textDecoration: "none"}}>
@@ -49,7 +52,17 @@ const TodosConteudos = styled.div`
     height: 100vh;
     background-color: #E5E5E5;
     font-family: 'Lexend Deca', sans-serif;
+
 `;
+const Loading = styled.div`
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+`;
+
 const Topo = styled.div`
     display: flex;
     justify-content: space-between;

@@ -59,7 +59,7 @@ export default function TelaCadastro(){
                             </FormLogin>
             
             }
-             {able ? <Link to="/cadastro" style={{ textDecoration: "blue"}}>
+             {able ? <Link to="/" style={{ textDecoration: "blue"}}>
                 <span>Já tem uma conta? Faça login!</span>
             </Link> : <Link to="" style={{ textDecoration: "blue"}}>
                 <span>Já tem uma conta? Faça login!</span>

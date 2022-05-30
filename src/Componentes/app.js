@@ -17,6 +17,7 @@ export default function App(){
     const[habitosHoje,setHabitosHoje] = useState();
     const[habitosCheck,setHabitosCheck] = useState();
     const[porcentagem,setPorcentagem] = useState();
+    const[reloadEntreTela,setReloadEntreTela] = useState(false);
 
     return(
         <UserContext.Provider value={{dadosUsuario,
@@ -29,7 +30,9 @@ export default function App(){
                                     habitosCheck,
                                     setHabitosCheck,
                                     porcentagem,
-                                    setPorcentagem}}>
+                                    setPorcentagem,
+                                    reloadEntreTela,
+                                    setReloadEntreTela}}>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<TelaLogin setDadosUsuario={setDadosUsuario}/>}/>

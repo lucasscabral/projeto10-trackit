@@ -1,22 +1,22 @@
 import Conteudos from "./conteudos"
 import styled from "styled-components"
 import UserContext from "../UseContext"
-import React, { useState,useContext, useEffect } from "react"
+import React, { useContext } from "react"
 
 export default function TelaHistorico(){
     const{dadosUsuario,checkhabitos} = useContext(UserContext);
-
+ 
     return(
         <Conteudos dadosUsuario={dadosUsuario} checkhabitos={checkhabitos}>
-        <ConteudosPrincipais>
-            <Topo>
-                <h1>Histórico</h1>
-            </Topo>
-            <Historico>
-                <p>Em breve você poderá ver o histórico dos seus hábitos aqui!</p>
-            </Historico>
-        </ConteudosPrincipais>
-    </Conteudos>  
+            <ConteudosPrincipais>
+                <Topo>
+                    <h1>Histórico</h1>
+                </Topo>
+                <Historico>
+                    <p>Em breve você poderá ver o histórico dos seus hábitos aqui!</p>
+                </Historico>
+            </ConteudosPrincipais>
+        </Conteudos>  
     )
 }
 

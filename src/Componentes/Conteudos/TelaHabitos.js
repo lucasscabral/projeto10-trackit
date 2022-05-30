@@ -45,13 +45,14 @@ export default function TelaHoje(){
     const{dadosUsuario,
         taskSalva,
         setTaskSalva,
-        checkhabitos,
-        habitosHoje,
-        habitosCheck,
-        porcentagem} = useContext(UserContext);
+        porcentagem,
+        reloadEntreTela,
+        setReloadEntreTela} = useContext(UserContext);
+
     const[atualizar,setAtualizar] = useState(0);
       
        useEffect(() => { 
+        setReloadEntreTela(!false);
             const tokenList ={
                 headers: {
                     "Authorization": `Bearer ${dadosUsuario.token}`
@@ -60,6 +61,7 @@ export default function TelaHoje(){
             if(diasSelec !== undefined){
                 const listaTarefas = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",tokenList);
                 listaTarefas.then(response =>{
+                    setReloadEntreTela(!true);
                     setTaskSalva([...response.data]);
                     })
             }       
@@ -112,7 +114,7 @@ export default function TelaHoje(){
    
 
     return(
-        <Conteudos dadosUsuario={dadosUsuario} checkhabitos={checkhabitos} habitosHoje={habitosHoje} habitosCheck={habitosCheck} porcentagem={porcentagem} >
+        <Conteudos dadosUsuario={dadosUsuario} porcentagem={porcentagem} reloadEntreTela ={reloadEntreTela} setReloadEntreTela={setReloadEntreTela}>
             <ConteudosPrincipais>
                 <TopoAdd>
                     <h1>Meus hábitos</h1>
@@ -299,6 +301,7 @@ const DiasEscolhidos = styled.div`
         height: 30px;
         background-color: ${props => props.backgroudColor};
         border: 1px solid #D5D5D5;
+        margin-top: 20px;
         border-radius: 5px;
         color: ${props => props.mudarCorText};
         margin-right: 5px;

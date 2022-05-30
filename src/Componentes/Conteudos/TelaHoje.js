@@ -12,17 +12,19 @@ export default function TelaHoje(){
         taskSalva,
         checkhabitos,
         setCheckhabitos,
-        habitosHoje,
         setHabitosHoje,
         habitosCheck,
         setHabitosCheck,
         porcentagem,
-        setPorcentagem} = useContext(UserContext);
+        setPorcentagem,
+        reloadEntreTela,
+        setReloadEntreTela} = useContext(UserContext);
 
     const[atualizar,setAtualizar] = useState(0);
     const dayjs = require('dayjs')
 
     useEffect(() =>{
+        setReloadEntreTela(!false);
             const config ={
                 headers: {
                     "Authorization": `Bearer ${dadosUsuario.token}`
@@ -30,6 +32,7 @@ export default function TelaHoje(){
             }
             const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",config);
             promise.then(response =>{
+                setReloadEntreTela(!true);
                 let aux = 0;
                 setCheckhabitos(response.data)
                 setHabitosHoje(response.data.length);
@@ -47,7 +50,7 @@ export default function TelaHoje(){
             })
     },[atualizar,taskSalva])
 
-    function checkHabito(idCheck,habitosDone,sequenciaHabito,maiorSequencia){
+    function checkHabito(idCheck,habitosDone){
       
         const config ={
             headers: {
@@ -75,22 +78,22 @@ export default function TelaHoje(){
     
 
     return(
-       checkHabito.length === 0? "" : <Conteudos dadosUsuario={dadosUsuario} checkhabitos={checkhabitos}  habitosHoje={habitosHoje} habitosCheck={habitosCheck} porcentagem={porcentagem}>
-            <ConteudosPrincipais>
-                <Topo>
-                    <h1>{dayjs().format('DD/MM')}</h1>
-                    {checkhabitos.length === 0? <span>Nenhum hábito concluído ainda</span>: <Porcentagem>{Math.round(porcentagem)}% dos hábitos concluídos</Porcentagem>}
-                </Topo>
-               {checkhabitos?.map(habitos => <ListaTarefa>
-                                                <div>
-                                                        <h2>{habitos.name}</h2>
-                                                        <h3>Sequência atual: {habitos.currentSequence} dias</h3>
-                                                        <h3>Seu recorde: {habitos.highestSequence} dias</h3>
-                                                </div>
-                                                <ImageCheck colorCheck={!habitos.done?"#EBEBEB":"#8FC549"} src={Check} alt="Check" onClick={() => checkHabito(habitos.id,habitos.done,habitos.currentSequence,habitos.highestSequence)}/>
-                                            </ListaTarefa>)}
-            </ConteudosPrincipais>
-        </Conteudos>  
+       checkHabito.length === 0? "" : <Conteudos dadosUsuario={dadosUsuario} porcentagem={porcentagem} reloadEntreTela ={reloadEntreTela} setReloadEntreTela={setReloadEntreTela}>
+                                        <ConteudosPrincipais>
+                                            <Topo>
+                                                <h1>{dayjs().format('DD/MM')}</h1>
+                                                {checkhabitos.length === 0? <span>Nenhum hábito concluído ainda</span>: <Porcentagem>{Math.round(porcentagem)}% dos hábitos concluídos</Porcentagem>}
+                                            </Topo>
+                                        {checkhabitos?.map(habitos => <ListaTarefa>
+                                                                            <div>
+                                                                                    <h2>{habitos.name}</h2>
+                                                                                    <><h3>Sequência atual:<MelhorSequencia color={habitos.currentSequence === habitos.highestSequence? "#8FC549":"#666666"}> {habitos.currentSequence} dias</MelhorSequencia></h3>
+                                                                                        <h3>Seu recorde: <MelhorSequencia color={habitos.currentSequence === habitos.highestSequence? "#8FC549":"#666666"}> {habitos.highestSequence} dias</MelhorSequencia></h3></>
+                                                                            </div>
+                                                                            <ImageCheck colorCheck={!habitos.done?"#EBEBEB":"#8FC549"} src={Check} alt="Check" onClick={() => checkHabito(habitos.id,habitos.done)}/>
+                                                                        </ListaTarefa>)}
+                                        </ConteudosPrincipais>
+                                    </Conteudos>  
     )
 }
 
@@ -151,8 +154,17 @@ const ListaTarefa = styled.div`
             font-size: 12.976px;
             color: #666666;
             margin-bottom: 5px;
+            display: flex;
         }
     }
+`;
+
+const MelhorSequencia = styled.h4`
+            font-weight: 400;
+            font-size: 12.976px;
+            color: ${props => props.color};
+            margin-left: 5px;
+            display: flex;
 `;
 
 const ImageCheck = styled.img`
