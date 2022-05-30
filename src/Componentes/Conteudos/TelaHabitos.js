@@ -88,9 +88,10 @@ export default function TelaHoje(){
                     }
                     const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",body,config);
                     promise.then(response => {
+                        setLoadingSalvar(false);
                         setAtualizar(atualizar + 1)
                         setNomeHabito("");
-                        setLoadingSalvar(false);
+                        
                         setApareceForm(!apareceForm);
                     })
                 
