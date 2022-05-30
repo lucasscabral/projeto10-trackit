@@ -17,7 +17,7 @@ export default function TelaHoje(){
     const dayjs = require('dayjs')
   
     useEffect(() =>{
-        if(habitosHoje.length !== 0){
+        //if(habitosHoje.length !== 0){
             const config ={
                 headers: {
                     "Authorization": `Bearer ${dadosUsuario.token}`
@@ -29,7 +29,7 @@ export default function TelaHoje(){
                 setHabitosCheck(...habitosCheck,response.data); 
             }).catch(err =>{
             })
-        }
+        //}
     },[atualizar,taskSalva])
 
     function checkHabito(idCheck,habitosDone){
