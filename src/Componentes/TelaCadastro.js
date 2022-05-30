@@ -29,10 +29,8 @@ export default function TelaCadastro(){
             const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
             const promise = axios.post(URL,dadosCadastrados);                        
             promise.then((response) =>{
-                console.log(response.data);
                 navigate("/");
             }).catch((err)=>{
-                console.log(err.response.data);
                 setAble(true);
                 alert(err.response.data.message)
             }) 

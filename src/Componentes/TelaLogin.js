@@ -27,12 +27,11 @@ export default function TelaLogin(props){
                 const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login"
                 const promise = axios.post(URL,corpoForm);
                 promise.then((response) => {
-                    console.log(response.data) // DAQUI ELE VAI PARA A TELA DE HOJE
+                    // DAQUI ELE VAI PARA A TELA DE HOJE
                     setDadosUsuario({...response.data});
                     navigate("/hoje");
                 })
                 .catch((err)=>{
-                    console.log(err.response.data)
                     setTimeout(() => {
                         alert(err.response.data.message);
                         setAble(true);
