@@ -7,15 +7,15 @@ import TelaHabitos from "./Conteudos/TelaHabitos";
 import TelaHistorico from "./Conteudos/TelaHistorico";
 import { useState,createContext } from "react";
 import UserContext from "./UseContext";
-//import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-//import ThreeDots from "react-loader-spinner"
+import "react-loader-spinner";
 
 
 export default function App(){
     const[dadosUsuario,setDadosUsuario] = useState({});
-    
+    const[taskSalva,setTaskSalva] = useState([]);  
+
     return(
-        <UserContext.Provider value={{dadosUsuario}}>
+        <UserContext.Provider value={{dadosUsuario,taskSalva,setTaskSalva}}>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<TelaLogin setDadosUsuario={setDadosUsuario}/>}/>

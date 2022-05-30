@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate,Link } from "react-router-dom";
 import LogoTrackit from "../image/Group 8.png"
+import { ThreeDots } from "react-loader-spinner"
 
 export default function TelaCadastro(){
     const[email,setEmail] = useState("");
@@ -54,13 +55,17 @@ export default function TelaCadastro(){
                                 <input type="text" placeholder="nome" disabled/>
                                 <input type="text" placeholder="image" disabled/>
                                 <input type="password" placeholder="senha" disabled/>
-                                <button type="submit" disabled>Cadastrar</button>
+                                <div>
+                                   <ThreeDots  color='white'/>
+                                </div>
                             </FormLogin>
             
             }
-            <Link to="/" style={{ textDecoration: "blue"}}>
+             {able ? <Link to="/cadastro" style={{ textDecoration: "blue"}}>
                 <span>Já tem uma conta? Faça login!</span>
-            </Link>
+            </Link> : <Link to="" style={{ textDecoration: "blue"}}>
+                <span>Já tem uma conta? Faça login!</span>
+            </Link> }
         </ConteudoLogin>
     )
 }
@@ -114,5 +119,15 @@ const FormLogin = styled.form`
         text-align: center;
         color: #FFFFFF;
         cursor: pointer;
+    }
+    div{
+        width: 100%;
+        height: 45px;
+        justify-content: center;
+        align-items: center;
+        background-color: #52B6FF;
+        color: #FFFFFF;
+        opacity: 0.7;
+        border-radius: 4.63636px;
     }
 `;

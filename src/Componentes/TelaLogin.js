@@ -4,9 +4,8 @@ import LogoTrackit from "../image/Group 8.png"
 import "../Estilos/fontes.css"
 import { Link,useNavigate } from "react-router-dom"
 import axios from "axios"
-import {render} from "react-dom"
-//import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-//import ThreeDots from "react-loader-spinner"
+import { ThreeDots } from "react-loader-spinner"
+
 
 export default function TelaLogin(props){
     let { setDadosUsuario } = props;
@@ -54,15 +53,19 @@ export default function TelaLogin(props){
                             <input type="password" placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)}  required/>
                             <button type="submit">Entrar</button>
                         </FormLogin> :  <FormLogin onSubmit={logarUser}>
-                                            <input type="email" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} disabled={able} required/>
-                                            <input type="password" placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)} disabled={able} required/>
-                                            {/*<ThreeDots color="#00BFFF" height={80} width={80} />*/}
-                                        </FormLogin> 
+                                                <input type="email" placeholder="E-mail"  disabled required/>
+                                                <input type="password" placeholder="senha"  disabled required/>
+                                                <div>
+                                                    <ThreeDots  color='white'/>
+                                                </div>
+                                            </FormLogin> 
                   
             }
-            <Link to="/cadastro" style={{ textDecoration: "blue"}}>
+            {able ? <Link to="/cadastro" style={{ textDecoration: "blue"}}>
                 <span>Não tem uma conta? Cadastre-se!</span>
-            </Link>
+            </Link> : <Link to="" style={{ textDecoration: "blue"}}>
+                <span>Não tem uma conta? Cadastre-se!</span>
+            </Link> }
         </ConteudoLogin>
     )
 
@@ -117,5 +120,15 @@ const FormLogin = styled.form`
         text-align: center;
         color: #FFFFFF;
         cursor: pointer;
+    }
+    div{
+        width: 100%;
+        height: 45px;
+        justify-content: center;
+        align-items: center;
+        background-color: #52B6FF;
+        color: #FFFFFF;
+        opacity: 0.7;
+        border-radius: 4.63636px;
     }
 `;

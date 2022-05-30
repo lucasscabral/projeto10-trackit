@@ -4,7 +4,7 @@ import React, { useState,useContext, useEffect } from "react"
 import Conteudos from "./conteudos";
 import ImageLixeiro from "../../image/Vector (1).png"
 import axios from "axios"
-
+import { ThreeDots } from "react-loader-spinner"
 
 function Dias({id,dia,diasSelec,setDiasSelec}){
     const[clicado,setClicado] = useState(false);
@@ -28,7 +28,7 @@ function Dias({id,dia,diasSelec,setDiasSelec}){
 }
 
 function DiasSelecs({index,dia,diasEscolhidos}){
-    const selecionados = diasEscolhidos.some(value => index == value);
+    const selecionados = diasEscolhidos.some(value => index === value);
 
     return(
         <DiasEscolhidos backgroudColor={selecionados?"#CFCFCF":"#FFFFFF"} mudarCorText={selecionados?"#FFFFFF":"#CFCFCF"}>{dia}</DiasEscolhidos>
@@ -38,11 +38,12 @@ function DiasSelecs({index,dia,diasEscolhidos}){
 
 export default function TelaHoje(){
     const[nomeHabito,setNomeHabito] = useState("");
-    const[apareceForm,setApareceForm] = useState(true);
+    const[apareceForm,setApareceForm] = useState(false);
+    const[loadingSalvar,setLoadingSalvar] = useState(false);
     const[diasSelec,setDiasSelec] = useState([]);
-    const[dias,setDias] = useState(["D","S","T","Q","Q","S","S"]);
-    const{dadosUsuario} = useContext(UserContext);
-    const[taskSalva,setTaskSalva] = useState([]);   
+    const dias = ["D","S","T","Q","Q","S","S"];
+    const{dadosUsuario,taskSalva,setTaskSalva} = useContext(UserContext);
+    const[atualizar,setAtualizar] = useState(0);
       
        useEffect(() => { 
             const tokenList ={
@@ -56,42 +57,62 @@ export default function TelaHoje(){
                     setTaskSalva([...response.data]);
                     })
             }       
-        },[])
+        },[atualizar])
 
 
 
     function validaTarefa(event){
         event.preventDefault();
-
-        if(diasSelec !== undefined){
-            const config ={
-                headers: {
-                    "Authorization": `Bearer ${dadosUsuario.token}`
-                }
-            }
-
-            const body = {
-                        name: nomeHabito,
-                        days: diasSelec
-            }
-            const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",body,config);
-            promise.then(response => {
-                setNomeHabito("");
-                setApareceForm(!apareceForm);
-            })
+        setLoadingSalvar(!loadingSalvar)
+        if(diasSelec.length !== 0){
+            if(nomeHabito !== null){
+                    const config ={
+                        headers: {
+                            "Authorization": `Bearer ${dadosUsuario.token}`
+                        }
+                    }
         
+                    const body = {
+                                name: nomeHabito,
+                                days: diasSelec
+                    }
+                    const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",body,config);
+                    promise.then(response => {
+                        setAtualizar(atualizar + 1)
+                        setNomeHabito("");
+                        setLoadingSalvar(!loadingSalvar);
+                        setApareceForm(!apareceForm);
+                    })
+                
+                }
+            }else{
+                alert("É Necessario escolher os dias para o seu Hábito");
+            }  
+    }
+
+    function deletarHabito(idHabito){
+       const config ={
+            headers: {
+                "Authorization": `Bearer ${dadosUsuario.token}`
+            }
+        }
+        if(window.confirm("Você tem certeza que quer excluir esse hábito?")){
+            const promise = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idHabito}`,config);
+            promise.then(response =>{
+                setAtualizar(atualizar + 1)
+            })
         }
     }
    
 
     return(
-        <Conteudos>
+        <Conteudos dadosUsuario={dadosUsuario}>
             <ConteudosPrincipais>
                 <TopoAdd>
                     <h1>Meus hábitos</h1>
                     <button onClick={() => setApareceForm(!apareceForm)}>+</button>
                 </TopoAdd>
-                { apareceForm? "" : <FormarTarefa onSubmit={validaTarefa}>
+                { apareceForm? <FormarTarefa onSubmit={validaTarefa}>
                                                                     <input type="text" placeholder="nome do hábito" value={nomeHabito} onChange={(e) => setNomeHabito(e.target.value)} required/>
                                                                     <DiasSemana> 
                                                                     {
@@ -100,11 +121,12 @@ export default function TelaHoje(){
                                                                     </DiasSemana>
                                                                     <BotoesForm>
                                                                         <div onClick={() => setApareceForm(!apareceForm)}>Cancelar</div>
-                                                                        <button type="submit">Salvar</button>
+                                                                        {!loadingSalvar? <button type="submit">Salvar</button>:  <Loading>
+                                                                                                                                    <ThreeDots  color='white' height={20} width={50}/>
+                                                                                                                                </Loading>}
                                                                     </BotoesForm>
-                                                                    
-                                                                </FormarTarefa>}
-                {taskSalva.length === 0? "": taskSalva.map(tarefa =><HabitosAdds>
+                                                                </FormarTarefa> : ""}
+                {taskSalva.length === 0? "": taskSalva?.map(tarefa =>        <HabitosAdds>
                                                                                 <Habitos>
                                                                                     <h2>{tarefa.name}</h2> 
                                                                                     <div>      
@@ -113,7 +135,7 @@ export default function TelaHoje(){
                                                                                     } 
                                                                                     </div> 
                                                                                 </Habitos>
-                                                                                <img src={ImageLixeiro} alt="lixeiro"/>
+                                                                                <img src={ImageLixeiro} alt="lixeiro" onClick={() => deletarHabito(tarefa.id)}/>
                                                                             </HabitosAdds>) }                  
                 {
                     taskSalva.length === 0? <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p> : ""
@@ -218,6 +240,19 @@ const BotoesForm = styled.div`
         cursor: pointer;
     }
 `;
+const Loading = styled.div`
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 84px;
+        height: 35px;
+        opacity: 0.7;
+        box-sizing: border-box;
+        margin-left: 20px;
+        background: #52B6FF;
+        border-radius: 4.63636px;
+        cursor: pointer;
+`;
 
 const HabitosAdds = styled.div`
     width: 100%;
@@ -229,8 +264,8 @@ const HabitosAdds = styled.div`
     display: flex;
     justify-content: space-between;
     img{
-        width: 13px;
-        height:15px;
+        width: 16px;
+        height:20px;
         cursor: pointer;
     }
 `;
@@ -257,7 +292,6 @@ const DiasEscolhidos = styled.div`
         border: 1px solid #D5D5D5;
         border-radius: 5px;
         color: ${props => props.mudarCorText};
-        cursor: pointer;
         margin-right: 5px;
 `;
 

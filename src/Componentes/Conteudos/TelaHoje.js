@@ -1,49 +1,85 @@
 import styled from "styled-components";
 import UserContext from "../UseContext"
-import { useState,useContext } from "react"
+import { useState,useContext,useEffect } from "react"
 import Conteudos from "./conteudos";
 import Check from "../../image/Check.png"
+import axios from "axios";
+import dayjs from "dayjs";
+
 
 export default function TelaHoje(){
-    //const[nomeHabito,setNomeHabito] = useState("");
-    //const{salvar,setSalvar,dadosUsuario} = useContext(UserContext);
-    //console.log(dadosUsuario);
+    const{dadosUsuario,taskSalva} = useContext(UserContext);
+    const[habitosHoje,setHabitosHoje] = useState([]);
+    const[habitosCheck,setHabitosCheck] = useState([]);
+    const[atualizar,setAtualizar] = useState(0);
+    const[manterAtualizado,setManterAtualizado] = useState();
+
+    const dayjs = require('dayjs')
+  
+    useEffect(() =>{
+        if(habitosHoje.length !== 0){
+            const config ={
+                headers: {
+                    "Authorization": `Bearer ${dadosUsuario.token}`
+                }
+            }
+            const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",config);
+            promise.then(response =>{
+                setHabitosHoje([...response.data]);
+                setHabitosCheck(...habitosCheck,response.data); 
+            }).catch(err =>{
+            })
+        }
+    },[atualizar,taskSalva])
+
+    function checkHabito(idCheck,habitosDone){
+        const config ={
+            headers: {
+                "Authorization": `Bearer ${dadosUsuario.token}`
+            }
+        }  
+        if(habitosDone){   
+            const unCheck = {
+                done : !habitosDone
+            }
+
+            const promiseUnCheck = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idCheck}/uncheck`,unCheck,config);
+            promiseUnCheck.then(response =>{  
+                setAtualizar(atualizar + 1);
+               
+            })
+        }else{  
+            const check = {
+                done : !habitosDone
+            }
+            const promisecheck = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${idCheck}/check`,check,config);
+            promisecheck.then( response =>{
+                setAtualizar(atualizar + 1);
+            })
+           
+        } 
+    }
 
     return(
-        <Conteudos>
+        <Conteudos dadosUsuario={dadosUsuario}>
             <ConteudosPrincipais>
                 <Topo>
-                    <h1>Segunda, 17/05</h1>
+                    <h1>{dayjs().format('DD/MM')}</h1>
                     <span>Nenhum hábito concluído ainda</span>
                 </Topo>
-                <ListaTarefa>
-                   <div>
-                        <h2>Ler 1 capítulo de livro</h2>
-                        <h3>Sequência atual: 3 diass</h3>
-                        <h3>Seu recorde: 5 dias</h3>
-                   </div>
-                   <img src={Check} alt="Check"/>
-                </ListaTarefa>
-                <ListaTarefa>
-                   <div>
-                        <h2>Ler 1 capítulo de livro</h2>
-                        <h3>Sequência atual: 3 diass</h3>
-                        <h3>Seu recorde: 5 dias</h3>
-                   </div>
-                   <img src={Check} alt="Check"/>
-                </ListaTarefa>
-                <ListaTarefa>
-                   <div>
-                        <h2>Ler 1 capítulo de livro</h2>
-                        <h3>Sequência atual: 3 diass</h3>
-                        <h3>Seu recorde: 5 dias</h3>
-                   </div>
-                   <img src={Check} alt="Check"/>
-                </ListaTarefa>
+               {habitosHoje?.map(habitos => <ListaTarefa>
+                                                <div>
+                                                        <h2>{habitos.name}</h2>
+                                                        <h3>Sequência atual: {habitos.currentSequence} dias</h3>
+                                                        <h3>Seu recorde: {habitos.highestSequence} dias</h3>
+                                                </div>
+                                                <ImageCheck colorCheck={!habitos.done?"#EBEBEB":"#8FC549"} src={Check} alt="Check" onClick={() => checkHabito(habitos.id,habitos.done)}/>
+                                            </ListaTarefa>)}
             </ConteudosPrincipais>
         </Conteudos>  
     )
 }
+
 const ConteudosPrincipais = styled.div`
     width: 100%;
     height: 100%;
@@ -83,17 +119,6 @@ const ListaTarefa = styled.div`
     height: 94px;
     background-color: #FFFFFF;
     border-radius: 5px;
-    img{
-        width: 69px;
-        height: 69px;
-        //background-color: #8FC549;
-        background: #EBEBEB;
-        border: 1px solid #E7E7E7;
-        border-radius: 5px;
-        box-sizing: border-box;
-        padding: 13px;
-        cursor: pointer;
-    }
     div{
         h2{
             font-weight: 400;
@@ -108,4 +133,15 @@ const ListaTarefa = styled.div`
             margin-bottom: 5px;
         }
     }
+`;
+
+const ImageCheck = styled.img`
+        width: 69px;
+        height: 69px;
+        background-color: ${props => props.colorCheck};
+        border: 1px solid #E7E7E7;
+        border-radius: 5px;
+        box-sizing: border-box;
+        padding: 13px;
+        cursor: pointer;
 `;

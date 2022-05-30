@@ -1,9 +1,13 @@
 import Conteudos from "./conteudos"
 import styled from "styled-components"
+import UserContext from "../UseContext"
+import React, { useState,useContext, useEffect } from "react"
 
 export default function TelaHistorico(){
+    const{dadosUsuario} = useContext(UserContext);
+
     return(
-        <Conteudos>
+        <Conteudos dadosUsuario={dadosUsuario}>
         <ConteudosPrincipais>
             <Topo>
                 <h1>Histórico</h1>

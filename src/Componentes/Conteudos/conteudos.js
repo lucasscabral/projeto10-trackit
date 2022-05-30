@@ -1,16 +1,18 @@
 import styled from "styled-components"
 import NomeApp from "../../image/TrackIt.png"
+import React from "react";
 import { Link } from "react-router-dom";
 import "../../Estilos/fontes.css"
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 export default function Conteudos(props){
-    console.log(props)
 
     return(
             <TodosConteudos>
                 <Topo>
                     <img src={NomeApp} alt="Nome-App"/>
-                    <img src={NomeApp} alt="foto-usuario"/>
+                    <img src={props.dadosUsuario.image} alt="foto-usuario"/>
                 </Topo>
                 {props.children}
                 <RodaPe>
@@ -18,7 +20,21 @@ export default function Conteudos(props){
                         <h1>Hábitos</h1>
                     </Link>
                     <Link to="/hoje" style={{ textDecoration: "none"}}>
-                        <h1>Hoje</h1>
+                        <div>
+                            <h2>Hoje</h2>
+                            <CircularProgressbar
+                                
+                                background
+                                backgroundPadding={6}
+                                styles={buildStyles({
+                                    width: 20,
+                                    backgroundColor: "#52B6FF",
+                                    textColor: "#fff",
+                                    pathColor: "#fff",
+                                    trailColor: "transparent"
+                                })}
+                            />
+                        </div>
                     </Link>
                     <Link to="/historico" style={{ textDecoration: "none"}}>
                         <h1>Histórico</h1>
@@ -37,6 +53,7 @@ const TodosConteudos = styled.div`
 const Topo = styled.div`
     display: flex;
     justify-content: space-between;
+
     align-items: center;
     position: fixed;
     width: 100%;
@@ -65,6 +82,19 @@ const RodaPe = styled.div`
     background-color: #FFFFFF;
     h1{
         color: #52B6FF;
+    }
+    h2{
+        color: #FFFFFF;
+        position: absolute;
+    }
+    div{
+        width: 91px;
+        height: 91px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 50px;
     }
     
 `;
