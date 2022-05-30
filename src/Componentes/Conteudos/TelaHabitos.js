@@ -46,13 +46,9 @@ export default function TelaHoje(){
         taskSalva,
         setTaskSalva,
         checkhabitos,
-        setCheckhabitos,
         habitosHoje,
-        setHabitosHoje,
         habitosCheck,
-        setHabitosCheck,
-        porcentagem,
-        setPorcentagem} = useContext(UserContext);
+        porcentagem} = useContext(UserContext);
     const[atualizar,setAtualizar] = useState(0);
       
        useEffect(() => { 
@@ -91,7 +87,6 @@ export default function TelaHoje(){
                         setLoadingSalvar(false);
                         setAtualizar(atualizar + 1)
                         setNomeHabito("");
-                        
                         setApareceForm(!apareceForm);
                     })
                 
